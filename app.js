@@ -4,7 +4,7 @@ let http = require('http');
 //let express = require('express');
 
 const URL = 'http://productsearch.linksynergy.com/productsearch%3Ftoken=b0861c6d36b799b6355b4d1729a141c0d9dcab69272900f8d6f0822a3690e7e9&keyword=%2522%E3%83%95%E3%82%A1%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%2522';
-const app = express();
+//const app = express();
 
 http.get(URL, (res) => {
   let body = '';
