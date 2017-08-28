@@ -1,31 +1,46 @@
-'use strict'
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
-let http = require('http');
-//let express = require('express');
+var index = require('./routes/index');
+var users = require('./routes/users');
 
-const URL = 'http://productsearch.linksynergy.com/productsearch%3Ftoken=b0861c6d36b799b6355b4d1729a141c0d9dcab69272900f8d6f0822a3690e7e9&keyword=%2522%E3%83%95%E3%82%A1%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%2522';
-//const app = express();
+var app = express();
 
-http.get(URL, (res) => {
-  let body = '';
-  res.setEncoding('utf8');
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-  res.on('data', (chunk) => {
-      body += chunk;
-  });
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-  res.on('end', (res) => {
-      res = JSON.parse(body);
-      console.log(res);
-  });
-}).on('error', (e) => {
-  console.log(e.message)
+app.use('/', index);
+app.use('/users', users);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
-/*
-app.get('/', function (req, res) {
-	res.send('Hello World!');
-	});
-app.listen(3000, function () {
-	console.log('listening on port 3000');
-	});
-*/
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
